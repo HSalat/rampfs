@@ -12,7 +12,7 @@ use typed_index_collections::TiVec;
 use crate::utilities::{print_count, progress_count};
 use crate::{Activity, Population, Venue, VenueID, MSOA};
 
-#[tracing::instrument(skip_all)]
+#[instrument(skip_all)]
 pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> Result<()> {
     // Only keep businesses in MSOAs where somebody lives.
     //
@@ -23,7 +23,7 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
     let msoas = population.unique_msoas();
 
     // Find all of the businesses, grouped by the Standard Industry Classification.
-    let span = tracing::info_span!("Finding all businesses").entered();
+    let span = info_span!("Finding all businesses").entered();
     let mut businesses_per_sic: HashMap<usize, Vec<BusinessID>> = HashMap::new();
     let mut business_locations: HashMap<BusinessID, Point<f32>> = HashMap::new();
     let mut available_jobs_per_business: HashMap<BusinessID, usize> = HashMap::new();
@@ -59,7 +59,7 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
     let mut business_to_venue: HashMap<BusinessID, VenueID> = HashMap::new();
     let mut venues = TiVec::new();
 
-    let _s = tracing::info_span!("Assigning workplaces").entered();
+    let _s = info_span!("Assigning workplaces").entered();
     let pb = progress_count(population.people.len());
     for person in &mut population.people {
         pb.inc(1);
